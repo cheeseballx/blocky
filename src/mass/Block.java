@@ -7,7 +7,8 @@ public class Block extends Entity{
     protected boolean solid;
     
     //Nobody outside package and subclasses can create A block
-    protected Block(){
+    protected Block(int id, String hr_ident){
+        super(id,hr_ident);
 
         //set some standards
         this.visible = true;
@@ -24,4 +25,9 @@ public class Block extends Entity{
     //To be vied from the outside
     public boolean isVisible(){ return visible; }
     public boolean isSolid(){ return visible; }
+
+    @Override
+    public String toString() {
+        return "Block " + super.toString();
+    }
 }
