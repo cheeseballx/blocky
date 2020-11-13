@@ -1,6 +1,6 @@
-package mass;
+package de.cheeseball.blocky.mass;
 
-import world.WorldLocation;
+import de.cheeseball.blocky.world.WorldLocation;
 
 public class Block extends Entity{
     protected boolean visible;

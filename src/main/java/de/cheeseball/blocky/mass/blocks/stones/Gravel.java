@@ -1,6 +1,6 @@
-package mass.blocks.stones;
+package de.cheeseball.blocky.mass.blocks.stones;
 
-import mass.blocks.Stone;
+import de.cheeseball.blocky.mass.blocks.Stone;
 
 public class Gravel extends Stone{
 

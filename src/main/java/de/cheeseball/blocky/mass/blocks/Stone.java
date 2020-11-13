@@ -1,6 +1,6 @@
-package mass.blocks;
+package de.cheeseball.blocky.mass.blocks;
 
-import mass.Block;
+import de.cheeseball.blocky.mass.Block;
 
 public class Stone extends Block {
 

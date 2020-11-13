@@ -1,4 +1,4 @@
-package mass;
+package de.cheeseball.blocky.mass;
 
 public class Entity {
 
