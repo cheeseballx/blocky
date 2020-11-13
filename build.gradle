@@ -1,0 +1,33 @@
+plugins{
+    id 'java'
+	id 'application'
+}
+
+def lwjglVersion = "3.2.3"
+def lwjglNatives = "natives-linux"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation platform ("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+	implementation group: 'org.lwjgl', name: 'lwjgl'
+	implementation group: 'org.lwjgl', name: 'lwjgl-assimp'
+	implementation group: 'org.lwjgl', name: 'lwjgl-glfw'
+	implementation group: 'org.lwjgl', name: 'lwjgl-openal'
+	implementation group: 'org.lwjgl', name: 'lwjgl-opengl'
+	implementation group: 'org.lwjgl', name: 'lwjgl-stb'
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl', classifier :  lwjglNatives
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-assimp', classifier : lwjglNatives
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-glfw', classifier : lwjglNatives
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-openal', classifier : lwjglNatives
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-opengl', classifier : lwjglNatives
+	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-stb', classifier : lwjglNatives
+}
+
+application{
+	mainClassName = "de.cheeseball.blocky.App"
+
+}
