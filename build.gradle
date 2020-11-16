@@ -25,6 +25,10 @@ dependencies {
 	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-openal', classifier : lwjglNatives
 	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-opengl', classifier : lwjglNatives
 	runtimeOnly group: 'org.lwjgl', name: 'lwjgl-stb', classifier : lwjglNatives
+
+	compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
+
+
 }
 
 application{

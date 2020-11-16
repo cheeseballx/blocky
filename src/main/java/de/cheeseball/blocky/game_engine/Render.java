@@ -13,9 +13,17 @@ import static org.lwjgl.opengl.GL43C.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+
+import javax.vecmath.Matrix4f;
+
 public class Render{
     // The window handle
 	private long window;
+
+	private Matrix4f rota;
+	private float[] v;
+	private int trans;
+	private float angle;
 
 	public void run() {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -115,11 +123,38 @@ public class Render{
 	}
 
 	private void draw(){
+		glEnable(GL_DEPTH_TEST);
+		
+		rota.rotX(angle);
+		rota.rotY(angle);
+		
+		angle +=0.01;
+
+		v[0] = rota.m00;
+		v[1] = rota.m10;
+		v[2] = rota.m20;
+		v[3] = rota.m30;
+		v[4] = rota.m01;
+		v[5] = rota.m11;
+		v[6] = rota.m21; 
+		v[7] = rota.m31;
+		v[8] = rota.m02;
+		v[9] = rota.m12;
+		v[10]= rota.m22;
+		v[11]= rota.m32;
+		v[12]= rota.m03;
+		v[13]= rota.m13;
+		v[14]= rota.m23;
+		v[15]= rota.m33;
+		glEnableVertexAttribArray(trans);
+		glUniformMatrix4fv(trans,false , v);
+
 		glDrawArrays(GL_TRIANGLE_STRIP,0,14);
 	}
 
 	private void make(){
 		
+		// did not read it yet, so TODO but its says most efficient way and gives an example ;)
 		// https://www.paridebroggi.com/blogpost/2015/06/16/optimized-cube-opengl-triangle-strip/
 
 		float points[] = {
@@ -138,6 +173,8 @@ public class Render{
 			3, 1, 6, 5, 4, 1, 0
 		};
 
+		angle = 0f;
+
 
 		 int buf = glGenBuffers();
 		 glBindBuffer(GL_ARRAY_BUFFER, buf);
@@ -149,14 +186,13 @@ public class Render{
 
 		 int shader = glCreateShader(GL_VERTEX_SHADER);
 
-		 System.out.println(shader);
-		 
 		 glShaderSource(shader,
-		 "attribute vec4 vPosition;  \n"+
-		 "void main()                \n"+
-		 "{                          \n"+
-		 "  gl_Position = vPosition; \n"+
-		 "};                         \n");
+			"attribute vec4 vPosition;          \n"+
+			"uniform mat4 trans;                \n"+
+			"void main()                        \n"+
+			"{                                  \n"+
+			"  gl_Position = trans * vPosition; \n"+
+			"};                                 \n");
 
 		 glCompileShader(shader);
 
@@ -167,7 +203,18 @@ public class Render{
 		 glLinkProgram(program);
 
 		 glUseProgram(program);
+		
+		 rota = new Matrix4f();
+		 rota.setIdentity();
+		
+		trans = glGetUniformLocation(program, "trans");
+		v = new float[] {rota.m00, rota.m10, rota.m20, rota.m30,
+			rota.m01, rota.m11, rota.m21, rota.m31,
+			rota.m02, rota.m12, rota.m22, rota.m32,
+			rota.m03, rota.m13, rota.m23, rota.m33};
 
+
+		glUniformMatrix4fv(trans,false , v);
 
 		 int pos = glGetAttribLocation(program, "vPosition");
 		 
