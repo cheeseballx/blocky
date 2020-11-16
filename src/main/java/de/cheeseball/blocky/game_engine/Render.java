@@ -115,21 +115,37 @@ public class Render{
 	}
 
 	private void draw(){
-		glDrawArrays(GL_TRIANGLES, 0, 12);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,14);
 	}
 
 	private void make(){
+		
+		// https://www.paridebroggi.com/blogpost/2015/06/16/optimized-cube-opengl-triangle-strip/
+
 		float points[] = {
-			0.0f,  0.5f,  0.0f,1.0f,
-			0.5f, -0.5f,  0.0f,1.0f,
-		   -0.5f, -0.5f,  0.0f,1.0f
-		 };
+			1.0f,	1.0f,	1.0f,1.0f,
+			0.0f,	1.0f,	1.0f,1.0f,
+			1.0f,	1.0f,	0.0f,1.0f,
+			0.0f,	1.0f,	0.0f,1.0f,
+			1.0f,	0.0f,	1.0f,1.0f,
+			0.0f,	0.0f,	1.0f,1.0f,
+			0.0f,	0.0f,	0.0f,1.0f,
+			1.0f,	0.0f,	0.0f,1.0f
+		};
+
+		int triangles[] = {
+			3, 2, 6, 7, 4, 2, 0,
+			3, 1, 6, 5, 4, 1, 0
+		};
+
 
 		 int buf = glGenBuffers();
 		 glBindBuffer(GL_ARRAY_BUFFER, buf);
 		 glBufferData(GL_ARRAY_BUFFER, points, GL_STATIC_DRAW);
 
-
+		 int ind = glGenBuffers();
+		 glBindBuffer(GL_ARRAY_BUFFER, ind);
+		 glBufferData(GL_ARRAY_BUFFER, triangles, GL_STATIC_DRAW);
 
 		 int shader = glCreateShader(GL_VERTEX_SHADER);
 
