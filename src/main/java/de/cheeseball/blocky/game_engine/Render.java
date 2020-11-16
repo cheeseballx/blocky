@@ -9,7 +9,7 @@ import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL43C.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -21,6 +21,7 @@ public class Render{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 		init();
+		make();
 		loop();
 
 		// Free the window callbacks and destroy the window
@@ -83,16 +84,18 @@ public class Render{
 
 		// Make the window visible
 		glfwShowWindow(window);
-	}
 
-	private void loop() {
+
 		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
+	}
 
+	private void loop() {
+		
 		// Set the clear color
 		glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
 
@@ -101,12 +104,60 @@ public class Render{
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+			draw();
+
 			glfwSwapBuffers(window); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
 		}
+	}
+
+	private void draw(){
+		glDrawArrays(GL_TRIANGLES, 0, 12);
+	}
+
+	private void make(){
+		float points[] = {
+			0.0f,  0.5f,  0.0f,1.0f,
+			0.5f, -0.5f,  0.0f,1.0f,
+		   -0.5f, -0.5f,  0.0f,1.0f
+		 };
+
+		 int buf = glGenBuffers();
+		 glBindBuffer(GL_ARRAY_BUFFER, buf);
+		 glBufferData(GL_ARRAY_BUFFER, points, GL_STATIC_DRAW);
+
+
+
+		 int shader = glCreateShader(GL_VERTEX_SHADER);
+
+		 System.out.println(shader);
+		 
+		 glShaderSource(shader,
+		 "attribute vec4 vPosition;  \n"+
+		 "void main()                \n"+
+		 "{                          \n"+
+		 "  gl_Position = vPosition; \n"+
+		 "};                         \n");
+
+		 glCompileShader(shader);
+
+
+		 int program = glCreateProgram();
+
+		 glAttachShader(program, shader);
+		 glLinkProgram(program);
+
+		 glUseProgram(program);
+
+
+		 int pos = glGetAttribLocation(program, "vPosition");
+		 
+		 glEnableVertexAttribArray(pos);
+		 glBindBuffer(GL_ARRAY_BUFFER, buf);
+		 glVertexAttribPointer(pos,4,GL_FLOAT,false,0,0L);
 	}
 
 }
