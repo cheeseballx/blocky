@@ -106,7 +106,8 @@ public class Render{
 		
 		// Set the clear color
 		glClearColor(1.0f, 1.0f, 0.0f, 0.0f);
-
+		glEnable(GL_DEPTH_TEST);
+		
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
@@ -123,8 +124,6 @@ public class Render{
 	}
 
 	private void draw(){
-		glEnable(GL_DEPTH_TEST);
-		
 		rota.rotX(angle);
 		rota.rotY(angle);
 		
@@ -146,7 +145,8 @@ public class Render{
 		v[13]= rota.m13;
 		v[14]= rota.m23;
 		v[15]= rota.m33;
-		glEnableVertexAttribArray(trans);
+		
+
 		glUniformMatrix4fv(trans,false , v);
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,14);
@@ -157,57 +157,16 @@ public class Render{
 		// did not read it yet, so TODO but its says most efficient way and gives an example ;)
 		// https://www.paridebroggi.com/blogpost/2015/06/16/optimized-cube-opengl-triangle-strip/
 
-		float points[] = {
-			1.0f,	1.0f,	1.0f,1.0f,
-			0.0f,	1.0f,	1.0f,1.0f,
-			1.0f,	1.0f,	0.0f,1.0f,
-			0.0f,	1.0f,	0.0f,1.0f,
-			1.0f,	0.0f,	1.0f,1.0f,
-			0.0f,	0.0f,	1.0f,1.0f,
-			0.0f,	0.0f,	0.0f,1.0f,
-			1.0f,	0.0f,	0.0f,1.0f
-		};
-
-		int triangles[] = {
-			3, 2, 6, 7, 4, 2, 0,
-			3, 1, 6, 5, 4, 1, 0
-		};
-
 		angle = 0f;
-
-
-		 int buf = glGenBuffers();
-		 glBindBuffer(GL_ARRAY_BUFFER, buf);
-		 glBufferData(GL_ARRAY_BUFFER, points, GL_STATIC_DRAW);
-
-		 int ind = glGenBuffers();
-		 glBindBuffer(GL_ARRAY_BUFFER, ind);
-		 glBufferData(GL_ARRAY_BUFFER, triangles, GL_STATIC_DRAW);
-
-		 int shader = glCreateShader(GL_VERTEX_SHADER);
-
-		 glShaderSource(shader,
-			"attribute vec4 vPosition;          \n"+
-			"uniform mat4 trans;                \n"+
-			"void main()                        \n"+
-			"{                                  \n"+
-			"  gl_Position = trans * vPosition; \n"+
-			"};                                 \n");
-
-		 glCompileShader(shader);
-
-
-		 int program = glCreateProgram();
-
-		 glAttachShader(program, shader);
-		 glLinkProgram(program);
-
-		 glUseProgram(program);
 		
-		 rota = new Matrix4f();
-		 rota.setIdentity();
+		BlockProgram prog = new BlockProgram();
+		glUseProgram(prog.getProgam());
 		
-		trans = glGetUniformLocation(program, "trans");
+		rota = new Matrix4f();
+		rota.setIdentity();
+		rota.rotX(4);
+		
+		trans = glGetUniformLocation(prog.getProgam(), "trans");
 		v = new float[] {rota.m00, rota.m10, rota.m20, rota.m30,
 			rota.m01, rota.m11, rota.m21, rota.m31,
 			rota.m02, rota.m12, rota.m22, rota.m32,
@@ -216,11 +175,6 @@ public class Render{
 
 		glUniformMatrix4fv(trans,false , v);
 
-		 int pos = glGetAttribLocation(program, "vPosition");
-		 
-		 glEnableVertexAttribArray(pos);
-		 glBindBuffer(GL_ARRAY_BUFFER, buf);
-		 glVertexAttribPointer(pos,4,GL_FLOAT,false,0,0L);
-	}
+}
 
 }
